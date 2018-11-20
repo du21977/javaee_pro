@@ -1,14 +1,15 @@
-package com.dobi.config;
+package com.dobi.spring.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import javax.sql.DataSource;
 
 /**
+ * 属性注入方式3---SpringBoot方式
+ *
  * Spring1中都是用xml来创建对象
  Spring2中基本用xml和注解结合来创建对象，通过xml来设置扫描有注解的类
  通过反射来创建对象
@@ -21,27 +22,14 @@ import javax.sql.DataSource;
 
 
 @Configuration //把他当成一个xml来看了
-@PropertySource("classpath:jdbc.properties")  //读取属性文件
-public class JdbcConfig {
+public class JdbcConfig2 {
 
-    @Value("${jdbc.url}")
-    String url;
-    @Value("${jdbc.driverClassName}")
-    String driverClassName;
-    @Value("${jdbc.username}")
-    String username;
-    @Value("${jdbc.password}")
-    String password;
 
     @Bean  //这个就相当于new对象啦，相当于之前xml文件中的<bean>标签
-    public DataSource dataSource(){
+    @ConfigurationProperties(prefix = "jdbc")
+    public DataSource dataSource( ){
         //数据库连接池
-        DruidDataSource druidDataSource = new DruidDataSource();
-        druidDataSource.setDriverClassName(driverClassName);
-        druidDataSource.setUrl(url);
-        druidDataSource.setUsername(username);
-        druidDataSource.setPassword(password);
-        return  druidDataSource;
+        return  new DruidDataSource();
     }
 
 }
